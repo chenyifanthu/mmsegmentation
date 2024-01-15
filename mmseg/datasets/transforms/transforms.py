@@ -458,9 +458,10 @@ class RGB2Gray(BaseTransform):
             Default: (0.299, 0.587, 0.114).
     """
 
-    def __init__(self, out_channels=None, weights=(0.299, 0.587, 0.114)):
+    def __init__(self, prob=1.0, out_channels=None, weights=(0.299, 0.587, 0.114)):
         assert out_channels is None or out_channels > 0
         self.out_channels = out_channels
+        self.prob = prob
         assert isinstance(weights, tuple)
         for item in weights:
             assert isinstance(item, (float, int))
@@ -475,18 +476,19 @@ class RGB2Gray(BaseTransform):
         Returns:
             dict: Result dict with grayscale image.
         """
-        img = results['img']
-        assert len(img.shape) == 3
-        assert img.shape[2] == len(self.weights)
-        weights = np.array(self.weights).reshape((1, 1, -1))
-        img = (img * weights).sum(2, keepdims=True)
-        if self.out_channels is None:
-            img = img.repeat(weights.shape[2], axis=2)
-        else:
-            img = img.repeat(self.out_channels, axis=2)
+        if np.random.rand() < self.prob:
+            img = results['img']
+            assert len(img.shape) == 3
+            assert img.shape[2] == len(self.weights)
+            weights = np.array(self.weights).reshape((1, 1, -1))
+            img = (img * weights).sum(2, keepdims=True)
+            if self.out_channels is None:
+                img = img.repeat(weights.shape[2], axis=2)
+            else:
+                img = img.repeat(self.out_channels, axis=2)
 
-        results['img'] = img
-        results['img_shape'] = img.shape
+            results['img'] = img
+            results['img_shape'] = img.shape
 
         return results
 
@@ -515,7 +517,9 @@ class AdjustGamma(BaseTransform):
     """
 
     def __init__(self, gamma=1.0):
-        assert isinstance(gamma, float) or isinstance(gamma, int)
+        if isinstance(gamma, tuple):
+            gamma = random.uniform(*gamma)
+        assert isinstance(gamma, float)
         assert gamma > 0
         self.gamma = gamma
         inv_gamma = 1.0 / gamma
@@ -1427,7 +1431,7 @@ class GenerateEdge(BaseTransform):
         Returns:
             dict: Result dict with edge mask.
         """
-        h, w = results['img_shape']
+        h, w = results['img_shape'][:2]
         edge = np.zeros((h, w), dtype=np.uint8)
         seg_map = results['gt_seg_map']
 

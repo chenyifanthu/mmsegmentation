@@ -1,6 +1,13 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from mmengine.utils import is_str
 
+def bedsheet_classes():
+    return [
+        'background', 'edge'
+    ]
+
+def bedsheets_palette():
+    return [[0, 0, 0], [255, 255, 255]]
 
 def cityscapes_classes():
     """Cityscapes class names for external use."""
@@ -474,6 +481,7 @@ def bdd100k_palette():
 
 
 dataset_aliases = {
+    'bedsheet': ['bedsheet'],
     'cityscapes': ['cityscapes'],
     'ade': ['ade', 'ade20k'],
     'voc': ['voc', 'pascal_voc', 'voc12', 'voc12aug'],
