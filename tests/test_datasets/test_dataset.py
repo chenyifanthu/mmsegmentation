@@ -11,7 +11,7 @@ from mmseg.datasets import (ADE20KDataset, BaseSegDataset, BDD100KDataset,
                             LIPDataset, LoveDADataset, MapillaryDataset_v1,
                             MapillaryDataset_v2, NYUDataset, PascalVOCDataset,
                             PotsdamDataset, REFUGEDataset, SynapseDataset,
-                            iSAIDDataset)
+                            iSAIDDataset, BedsheetDataset)
 from mmseg.registry import DATASETS
 from mmseg.utils import get_classes, get_palette
 
