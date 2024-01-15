@@ -1,5 +1,5 @@
 dataset_type = 'BedsheetDataset'
-data_root = '/Users/chenyifan/data/LaundrySeg/data'
+data_root = '/root/LaundryDataset/data'
 train_pipeline = [
     dict(type='LoadImageFromFile'),
     dict(type='LoadAnnotations'),
